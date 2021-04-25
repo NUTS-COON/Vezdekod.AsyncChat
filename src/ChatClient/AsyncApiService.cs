@@ -38,7 +38,7 @@ namespace ChatClient
             return await Get<ClientsResponse>(url);
         }
 
-        public async Task<bool> SendMessage(string user, string text, string sender)
+        public async Task<SendMessageResult> SendMessage(string user, string text, string sender)
         {
             var url = $"{_apiOptions.BaseUrl}/Chat/SendMessage";
             var data = new MessageSendRequest
@@ -47,20 +47,29 @@ namespace ChatClient
                 Text = text,
                 Sender = sender
             };
-
-            return await Post<MessageSendRequest, bool>(url, data);
-        }
-
-        private async Task<TResult> Post<TData, TResult>(string url, TData data)
-        {
+            
             using (var httpClient = new HttpClient())
             {
                 var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
                 var response = await httpClient.PostAsync(url, content);
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return new SendMessageResult
+                    {
+                        Success = false,
+                        UserDoesNotExist = true
+                    };
+                }
+                
                 response.EnsureSuccessStatusCode();
                 var body = await response.Content.ReadAsStringAsync();
 
-                return JsonConvert.DeserializeObject<TResult>(body);
+                var result = JsonConvert.DeserializeObject<bool>(body);
+
+                return new SendMessageResult
+                {
+                    Success = result
+                };
             }
         }
 

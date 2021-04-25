@@ -17,5 +17,10 @@ namespace AsyncApi.Services
         {
             return _clients.Keys.ToList();
         }
+
+        public bool Exists(string name)
+        {
+            return _clients.ContainsKey(name);
+        }
     }
 }

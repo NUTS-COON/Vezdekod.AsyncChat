@@ -167,9 +167,13 @@ namespace ChatClient
 
             var text = command.Replace($"{args[0]} {args[1]} ", "");
             var result = await _asyncApiService.SendMessage(args[1], text, _currentUser);
-            if (result)
+            if (result.Success)
             {
                 Console.WriteLine("Message successfully sent");
+            }
+            else if (result.UserDoesNotExist)
+            {
+                Console.WriteLine($"User with name {args[1]} does not exist");
             }
             else
             {

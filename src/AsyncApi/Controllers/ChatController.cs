@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using AsyncApi.Services;
 using Contract.Request;
 using Contract.Response;
@@ -45,8 +46,15 @@ namespace AsyncApi.Controllers
         [HttpPost]
         public async Task<IActionResult> SendMessage(MessageSendRequest model)
         {
-            var result = await _chatService.SendMessage(model);
-            return Ok(result);
+            try
+            {
+                var result = await _chatService.SendMessage(model);
+                return Ok(result);
+            }
+            catch (ClientNotFoundException)
+            {
+                return NotFound();
+            }
         }
     }
 }

@@ -30,6 +30,11 @@ namespace AsyncApi.Services
 
         public async Task<bool> SendMessage(MessageSendRequest model)
         {
+            if (!_clientProvider.Exists(model.To))
+            {
+                throw new ClientNotFoundException();
+            }
+            
             return await _kafkaService.Send(new KafkaMessage
             {
                 Topic = model.To,

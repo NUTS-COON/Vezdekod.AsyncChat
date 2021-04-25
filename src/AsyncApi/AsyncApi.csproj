@@ -14,10 +14,4 @@
       <ProjectReference Include="..\Kafka.Client\Kafka.Client.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <None Update="kafka.properties">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-    </ItemGroup>
-
 </Project>
